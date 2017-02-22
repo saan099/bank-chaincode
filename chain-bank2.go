@@ -134,7 +134,12 @@ func (t *SimpleChaincode) increaseBalance(stub shim.ChaincodeStubInterface, args
 	acc:=account{}
         json.Unmarshal(valAsbytes,&acc)
         fmt.Println(acc)	
-	acc.Balance+=strconv.Atoi(args[1])
+	acc.Balance+, err=strconv.Atoi(args[1])
+	
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return nil, errors.New(jsonResp)
+	}
 	str:=`{"bank_ID": "`+acc.Bank_ID+`", "balance": `+strconv.Itoa(acc.Balance)+`, "name": "`+acc.Name+`"}`
 	err = stub.PutState(key, []byte(str))
 

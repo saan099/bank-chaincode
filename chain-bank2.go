@@ -72,7 +72,7 @@ func (t *SimpleChaincode) make_account(stub shim.ChaincodeStubInterface, args []
 	
 
 	key = args[0] //rename for funsies
-	value := str
+	value = str
 	err = stub.PutState(key, []byte(value)) //write the variable into the chaincode state
 	if err != nil {
 		return nil, err

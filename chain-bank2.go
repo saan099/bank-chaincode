@@ -3,6 +3,8 @@ package main
 
 import (
 	"errors"
+	"encoding/json"	
+	"strconv"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -50,6 +52,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	} else if function == "make_account" {
 		return t.make_account(stub, args)
+	} else if function == "increaseBalance" {
+		return t.increaseBalance(stub,args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -111,6 +115,35 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	}
 
 	return valAsbytes, nil
+}
+
+func (t *SimpleChaincode) increaseBalance(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+	var key, jsonResp string
+	var err error
+
+	if len(args) != 2 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+	}
+
+	key = args[0]
+	valAsbytes, err := stub.GetState(key)
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+	acc:=account{}
+        json.Unmarshal(valAsbytes,&acc)
+        fmt.Println(acc)	
+	acc.balance+=strconv.Atoi(args[1])
+	str:=`{"bank_ID": "`+acc.Bank_ID+`", "balance": `+strconv.Itoa(acc.balance)+`, "name": "`+acc.name+`"}`
+	err = stub.PutState(key, []byte(str))
+
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+	return nil, nil
+	
 }
 
 

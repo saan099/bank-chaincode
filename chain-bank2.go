@@ -52,8 +52,10 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.Init(stub, "init", args)
 	} else if function == "make_account" {
 		return t.make_account(stub, args)
-	} else if function == "increaseBalance" {
-		return t.increaseBalance(stub,args)
+	} else if function == "deposit" {
+		return t.deposit(stub,args)
+	} else if function == "withdrawal" {
+		return t.withdrawal(stub,args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -117,7 +119,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	return valAsbytes, nil
 }
 
-func (t *SimpleChaincode) increaseBalance(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+func (t *SimpleChaincode) deposit(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
 	var key, jsonResp string
 	var err error
 
@@ -152,5 +154,44 @@ func (t *SimpleChaincode) increaseBalance(stub shim.ChaincodeStubInterface, args
 	return nil, nil
 	
 }
+
+
+func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []string) ([]byte, error){
+	var key, jsonResp string
+	var err error
+
+	if len(args) != 2 {
+		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+	}
+
+	key = args[0]
+	valAsbytes, err := stub.GetState(key)
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+	acc:=account{}
+        json.Unmarshal(valAsbytes,&acc)
+        fmt.Println(acc)
+	num, err:=strconv.Atoi(args[1])
+	
+	
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+	acc.Balance-=num
+	str:=`{"bank_ID": "`+acc.Bank_ID+`", "balance": `+strconv.Itoa(acc.Balance)+`, "name": "`+acc.Name+`"}`
+	err = stub.PutState(key, []byte(str))
+
+	if err != nil {
+		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
+		return nil, errors.New(jsonResp)
+	}
+	return nil, nil
+	
+}
+
+
 
 

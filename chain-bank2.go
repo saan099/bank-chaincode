@@ -206,13 +206,13 @@ func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []st
 
 func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string) ([]byte,error) {
 
-	//var err error
+	var err error
 	var index []string
 	var resultstr string
 	if len(args)!=0 {
 		return nil, errors.New("expecting 0 args")
 	}
-	val:=stub.GetState(indexes)
+	valAsbytes,err:=stub.GetState(indexes)
 	json.Unmarshal(valAsbytes,&index)
 
 	for _, i:=range(val) {

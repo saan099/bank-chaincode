@@ -208,7 +208,7 @@ func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string
 
 	
 	var index []string
-	var resultstr string
+	
 	if len(args)!=0 {
 		return nil, errors.New("expecting 0 args")
 	}
@@ -217,11 +217,14 @@ func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string
 		return nil,err
 	}
 	json.Unmarshal(valAsbytes,&index)
-
-	for _, i:=range(index) {
-		resultstr=resultstr+i
+	for i:=range index {
+		oneResult,err :=stub.GetState(index[i])
+		if err!=nil {
+			return nil, errors.New("error!!")
+		}
+		allResults=allResults+string(oneResult[:])
 	}
-	return []byte(resultstr),nil
+	return []byte(allResult),nil
 }
 
 

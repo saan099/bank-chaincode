@@ -208,7 +208,7 @@ func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string
 
 	
 	var index []string
-	
+	var allResults string
 	if len(args)!=0 {
 		return nil, errors.New("expecting 0 args")
 	}
@@ -224,7 +224,7 @@ func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string
 		}
 		allResults=allResults+string(oneResult[:])
 	}
-	return []byte(allResult),nil
+	return []byte(allResults),nil
 }
 
 

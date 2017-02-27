@@ -94,6 +94,8 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 	// Handle different functions
 	if function == "read" { //read a variable
 		return t.read(stub, args)
+	}else if function=="seeAll" {
+		return t.seeAll(stub,args)
 	}
 	fmt.Println("query did not find func: " + function)
 
@@ -190,6 +192,23 @@ func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []st
 	}
 	return nil, nil
 	
+}
+
+
+func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string) ([]byte,error) {
+
+	var err error
+	var index []string
+	var resultstr string
+	if len(args)!=0 {
+		return nil, errors.New("expecting 0 args")
+	}
+	valAsbytes:=stub.GetArgs()
+	index=string(valAsbytes[:])
+	for _, i:=range(index) {
+		resultstr=resultstr+i
+	}
+	return []byte(resultstr),nil
 }
 
 

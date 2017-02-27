@@ -204,7 +204,7 @@ func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string
 		return nil, errors.New("expecting 0 args")
 	}
 	valAsbytes:=stub.GetArgs()
-	index=string(valAsbytes[:])
+	json.Unmarshal(valAsbytes,&index)
 	for _, i:=range(index) {
 		resultstr=resultstr+i
 	}

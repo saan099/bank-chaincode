@@ -214,7 +214,7 @@ func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string
 	}
 	valAsbytes,err:=stub.GetState(indexes)
 	if err!=nil {
-		return nil,errors.New(err)
+		return nil,err
 	}
 	json.Unmarshal(valAsbytes,&index)
 

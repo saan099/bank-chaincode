@@ -90,7 +90,8 @@ func (t *SimpleChaincode) make_account(stub shim.ChaincodeStubInterface, args []
 	valAsbytes,err:=stub.GetState(indexes)
 	json.Unmarshal(valAsbytes,&index)
 	index=append(index,args[0])
-	err=stub.PutState(indexes,[]byte(index))
+	indexAsbytes:=json.Marshal(index)
+	err=stub.PutState(indexes,indexAsbytes)
 	return nil, nil
 }
 

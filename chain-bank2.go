@@ -16,6 +16,7 @@ Balance int `json:"balance"`
 Name string `json:"name"`
 }
 
+var indexes string="index"
 
 
 // SimpleChaincode example simple Chaincode implementation
@@ -35,7 +36,10 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
 
-	err := stub.PutState("Bank_ID", []byte(args[0]))
+	var empty []string
+	indexAsbytes, _:= json.Marshal(empty)
+	err := stub.PutState(indexes,indexAsbytes)
+
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +79,7 @@ func (t *SimpleChaincode) make_account(stub shim.ChaincodeStubInterface, args []
 	
 
 	str:=`{"bank_ID": "`+args[0]+`", "balance": `+args[1]+`, "name": "`+args[2]+`"}`
-	
+	var index []string
 
 	key = args[0] //rename for funsies
 	value = str
@@ -83,6 +87,10 @@ func (t *SimpleChaincode) make_account(stub shim.ChaincodeStubInterface, args []
 	if err != nil {
 		return nil, err
 	}
+	valAsbytes,err:=stub.GetState(indexes)
+	json.Unmarshal(valAsbytes,&index)
+	index=append(index,args[0])
+	err=stub.PutState(indexes,[]byte(index))
 	return nil, nil
 }
 
@@ -198,13 +206,13 @@ func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []st
 func (t *SimpleChaincode) seeAll (stub shim.ChaincodeStubInterface,args []string) ([]byte,error) {
 
 	//var err error
-	//var index []string
+	var index []string
 	var resultstr string
 	if len(args)!=0 {
 		return nil, errors.New("expecting 0 args")
 	}
-	val:=stub.GetStringArgs()
-	//json.Unmarshal(valAsbytes,&index)
+	val:=stub.GetState(indexes)
+	json.Unmarshal(valAsbytes,&index)
 
 	for _, i:=range(val) {
 		resultstr=resultstr+i

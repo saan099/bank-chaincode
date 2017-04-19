@@ -148,6 +148,14 @@ func (t *SimpleChaincode) work(stub shim.ChaincodeStubInterface, args []string) 
 	return nil, nil
 }
 
+func (t *SimpleChaincode) check(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	time.Sleep(50 * time.Second)
+	_ = stub.PutState("some", []byte("yo yo"))
+
+	return nil, nil
+
+}
+
 func (t *SimpleChaincode) deposit(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, jsonResp string
 	var err error

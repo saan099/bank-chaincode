@@ -138,8 +138,8 @@ func (t *SimpleChaincode) thread(stub shim.ChaincodeStubInterface, key string, w
 func (t *SimpleChaincode) work(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var wg sync.WaitGroup
 	_ = stub.PutState(args[0], []byte("I"))
-
-	t.thread(stub, args[1], &wg)
+	wg.Add(1)
+	go t.thread(stub, args[1], &wg)
 	wg.Wait()
 	_ = stub.PutState(args[2], []byte("you"))
 	return nil, nil

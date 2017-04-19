@@ -62,6 +62,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 		return t.withdrawal(stub, args)
 	} else if function == "work" {
 		return t.work(stub, args)
+	} else if function == "check" {
+		return t.check(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 

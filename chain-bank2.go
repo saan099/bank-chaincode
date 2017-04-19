@@ -151,7 +151,7 @@ func (t *SimpleChaincode) work(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 func (t *SimpleChaincode) check(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	time.Sleep(50 * time.Second)
+	time.Sleep(20 * time.Second)
 	_ = stub.PutState("some", []byte("yo yo"))
 
 	return nil, nil

@@ -129,7 +129,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	return valAsbytes, nil
 }
 
-func (t *SimpleChaincode) thread(stub shim.ChaincodeStubInterface, key string, wg *sync.WaitGroup) {
+func thread(stub shim.ChaincodeStubInterface, key string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	time.Sleep(10 * time.Second)
 	_ = stub.PutState(key, []byte("love"))

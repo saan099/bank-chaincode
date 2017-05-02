@@ -79,11 +79,11 @@ func (t *SimpleChaincode) make_account(stub shim.ChaincodeStubInterface, args []
 	if len(args) != 3 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 3. name of the key and value to set")
 	}
-	//	user, err := stub.ReadCertAttribute("role")
-	//if err != nil {
-	//return nil, errors.New("whahahha")
-	//}
-	//_ = stub.PutState("user", []byte(user))
+	user, err := stub.ReadCertAttribute("role")
+	if err != nil {
+		return nil, errors.New("whahahha")
+	}
+	_ = stub.PutState("user", []byte(user))
 
 	str := `{"bank_ID": "` + args[0] + `", "balance": ` + args[1] + `, "name": "` + args[2] + `"}`
 	var index []string

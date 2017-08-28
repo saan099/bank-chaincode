@@ -33,6 +33,7 @@ func main() {
 
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
+	function, args := stub.GetFunctionAndParameters()
 	if len(args) != 1 {
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
@@ -50,11 +51,12 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
 
 // Invoke isur entry point to invoke a chaincode function
 func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
-	fmt.Println("invoke is running " + function)
 	function, args := stub.GetFunctionAndParameters()
+	fmt.Println("invoke is running " + function)
+
 	// Handle different functions
 	if function == "init" {
-		return t.Init(stub, "init", args)
+		return t.Init(stub)
 	} else if function == "make_account" {
 		return t.make_account(stub, args)
 	} else if function == "deposit" {
@@ -65,6 +67,8 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		return t.work(stub, args)
 	} else if function == "check" {
 		return t.check(stub, args)
+	} else if function == "read" { //read a variable
+		return t.read(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -80,11 +84,6 @@ func (t *SimpleChaincode) make_account(stub shim.ChaincodeStubInterface, args []
 	if len(args) != 3 {
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
-	user, err := stub.ReadCertAttribute("role")
-	if err != nil {
-		return shim.Error(fmt.Sprintf("bugga bugga"))
-	}
-	_ = stub.PutState("user", []byte(user))
 
 	str := `{"bank_ID": "` + args[0] + `", "balance": ` + args[1] + `, "name": "` + args[2] + `"}`
 	var index []string

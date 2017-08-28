@@ -150,7 +150,7 @@ func (t *SimpleChaincode) work(stub shim.ChaincodeStubInterface, args []string) 
 }
 
 func (t *SimpleChaincode) check(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	time.Sleep(20 * time.Second)
+	time.Sleep(60 * time.Second)
 	_ = stub.PutState("some", []byte("yo yo"))
 
 	return shim.Success(nil)
@@ -176,7 +176,6 @@ func (t *SimpleChaincode) deposit(stub shim.ChaincodeStubInterface, args []strin
 	num, err := strconv.Atoi(args[1])
 
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
 	acc.Balance += num
@@ -184,7 +183,6 @@ func (t *SimpleChaincode) deposit(stub shim.ChaincodeStubInterface, args []strin
 	err = stub.PutState(key, []byte(str))
 
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
 	return shim.Success(nil)
@@ -210,7 +208,6 @@ func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []st
 	num, err := strconv.Atoi(args[1])
 
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
 	acc.Balance -= num
@@ -218,7 +215,6 @@ func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []st
 	err = stub.PutState(key, []byte(str))
 
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
 	return shim.Success(nil)

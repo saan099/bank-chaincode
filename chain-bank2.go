@@ -32,10 +32,6 @@ func main() {
 
 // Init resets all the things
 func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface) pb.Response {
-	function, args := stub.GetFunctionAndParameters()
-	if len(args) != 1 {
-		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
-	}
 
 	var empty []string
 	indexAsbytes, _ := json.Marshal(empty)
@@ -118,7 +114,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 
 // read - query function to read key/value pair
 func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var key, jsonResp string
+	var key string
 	var err error
 
 	if len(args) != 1 {
@@ -128,7 +124,6 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	key = args[0]
 	valAsbytes, err := stub.GetState(key)
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
 
@@ -163,7 +158,7 @@ func (t *SimpleChaincode) check(stub shim.ChaincodeStubInterface, args []string)
 }
 
 func (t *SimpleChaincode) deposit(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var key, jsonResp string
+	var key string
 	var err error
 
 	if len(args) != 2 {
@@ -173,7 +168,6 @@ func (t *SimpleChaincode) deposit(stub shim.ChaincodeStubInterface, args []strin
 	key = args[0]
 	valAsbytes, err := stub.GetState(key)
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
 	acc := account{}
@@ -198,7 +192,7 @@ func (t *SimpleChaincode) deposit(stub shim.ChaincodeStubInterface, args []strin
 }
 
 func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []string) pb.Response {
-	var key, jsonResp string
+	var key string
 	var err error
 
 	if len(args) != 2 {
@@ -208,7 +202,6 @@ func (t *SimpleChaincode) withdrawal(stub shim.ChaincodeStubInterface, args []st
 	key = args[0]
 	valAsbytes, err := stub.GetState(key)
 	if err != nil {
-		jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
 		return shim.Error(fmt.Sprintf("Wrong number of arguments"))
 	}
 	acc := account{}
